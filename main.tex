@@ -1,13 +1,124 @@
 \documentclass{beamer}
+
 \usetheme{metropolis}           % Use metropolis theme
-\title{A minimal example}
+\title{Funnel hopping Monte Carlo: An efficient method to overcome broken ergodicity}
+\subtitle{Proseminar Computational Physics and Electronic Structure}
 \date{\today}
-\author{Matthias Vogelgesang}
-\institute{Centre for Modern Beamer Themes}
+\author{Matthias Vogler}
+\institute{Departement of Physics\\ University of Basel}
+
+\usepackage[backend=biber,style=ieee,natbib=true]{biblatex} % Use the bibtex backend with the authoryear citation style (which resembles APA)
+
+\addbibresource{bibliography.bib} % The filename of the bibliography
+
+\usepackage[autostyle=true]{csquotes} % Required to generate language-dependent quotes in the bibliography
+
+
 \begin{document}
   \maketitle
-  \section{First Section}
-  \begin{frame}{First Frame}
-    Hello, world!
+  \section{Introduction}
+  \begin{frame}
+  \frametitle{The Paper}
+   	\begin{itemize}
+   		\item Funnel hopping Monte Carlo: An efficient mehtod to overcome broken ergodicity \cite{Finkler2020}
+   		\item \citeauthor{Finkler2020} 
+   		\item Journal of Chemical Physics
+   		\item 23 April 2020
+
+   	\end{itemize}
+  \end{frame}
+
+  \begin{frame}
+  	\begin{center}
+  		\huge
+  		Monte Carlo Simulations and Metropolis-Hastings
+  	\end{center}
+
+  \end{frame}
+
+  \begin{frame}
+  	\frametitle{Monte Carlo simulations and Metropolis-Hastings}
+  	\large Goal: Generate random samples from a target distribution \\
+  	\subsubsection{Algoritm}
+  	\begin{itemize}
+  		\item Start at initial configuration $\mathbf{r}$
+  		\item Propose a new configuration $\mathbf{r}^\prime$
+  		\item Accept or reject the new configuration with the probability $\alpha$ given by the Metropolis-Hastings criterion \cite{Hastings1970}
+  		\begin{equation}
+  		\alpha = \text{min}\left(1,\frac{P(\mathbf{r}^\prime)}{P(\mathbf{r})}\frac{g(\mathbf{r}|\mathbf{r}^\prime)}{g(\mathbf{r}^\prime|\mathbf{r})}\right)
+  		\end{equation}
+  	\end{itemize}
+  \end{frame}
+
+  \begin{frame}
+  	\frametitle{Monte Carlo simulations and Metropolis-Hastings}
+  	\begin{itemize}
+  		\item $P(\mathbf{r})$: target distribution
+  		\item $g(\mathbf{r}^\prime|\mathbf{r})$: probability of proposing a move from $\mathbf{r}$ to $\mathbf{r}^\prime$
+  		\item Our target distribution is the Boltzmann distribution:
+  		\begin{equation}
+  			P(r) = \frac{1}{Z(T)}\exp\left(\frac{-E(\mathbf{r})}{k_bT}\right)
+  		\end{equation}
+  		\item Note: $\mathbf{r} = (\vec{r}_1,\vec{r}_2, \ldots, \vec{r}_{N})^\text{T}$
+  	\end{itemize}
+  \end{frame}
+
+	\begin{frame}
+		\frametitle{Monte Carlo simulations and Metropolis-Hastings}
+		We would like to sample the complete configuration space but this brings some problems in practice
+		\begin{itemize}
+			\item High energy barriers between different regions
+			\item limited computation time
+		\end{itemize}	
+	\end{frame}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\begin{frame}
+  	\printbibliography[heading=bibintoc]
+
   \end{frame}
 \end{document}
