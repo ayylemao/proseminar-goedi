@@ -5,3 +5,7 @@
 *.snm
 *.toc
 *.log
+*.bbl
+*.bcf
+*.xml
+*.blg
