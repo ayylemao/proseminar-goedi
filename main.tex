@@ -354,25 +354,198 @@
 	\end{frame}
 
 
+	\begin{frame}
+		\frametitle{Funnel hopping Monte Carlo}
+		We have now a framework...
+		\begin{itemize}
+			\item ...to propose moves between funnels out of precomputed knowledge
+			\item ...with high chance of acceptance
+		\end{itemize}
+	\end{frame}
 
+	\section{Application}
 
+	\begin{frame}
+		\frametitle{Parameters}
+		The method was tested...
+		\begin{itemize}
+			\item  ...on Lennard-Jones Clusters with 38 and 75 atoms ($LJ_{38}$, $LJ_{75}$).
+			\item  ...with a chance to propose a FH move of 10$\%$
+		\end{itemize}
+	\end{frame}
 
+	\begin{frame}
+		\frametitle{Potential}
+		The potential used was the Lennard-Jones potential:
+		\begin{equation}
+			E_{LJ}=\sum_{i<j}^N 4\epsilon\left[\left(\frac{\sigma}{r_{ij}}\right)^{12}-\left(\frac{\sigma}{r_{ij}}\right)^6\right]
+		\end{equation}
+		\begin{itemize}
+			\item $r_{ij}$: pairwise distances between atoms $i$ and $j$
+		\end{itemize}
+	\end{frame}
 
+	\begin{frame}
+		\frametitle{Confining Potential}
+		To avoid evaporation events, a confining Potential \cite{Nigra2005} was added:
+		\begin{equation}
+			V(r)=\sum_{i=1}^N\epsilon\left(\frac{||\vec{r}_i-\vec{r}_{cm}||}{r_c}\right)^{20}
+		\end{equation}
+		\begin{itemize}
+			\item $\vec{r}_{cm}$: Center of mass position
+			\item $r_c$: Radius of the confining potential
+			\begin{itemize}
+				\item Value used: $r_c=3.5\sigma$
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
 
+	\begin{frame}
+		\frametitle{Heat capacity}
+		A good quantity of interest for testing MCMC methods is the heat capacity. The formula for $C_V$ used was:
+		\begin{equation}
+			C_V(T)=\frac{3}{2}+\frac{1}{NT^2}(\left<E^2\right>_T-\left<E\right>_T^2)
+		\end{equation}
 
+	\end{frame}
 
+	\begin{frame}
+		\frametitle{LJ$_{38}$}
+		\begin{figure}
+			\center
+			\includegraphics[height=0.85\textheight]{figures/LJ38.png}
+			\label{fig:LJ38_disc}
+			\caption{Disconnectivity graph for the $LJ_{38}$ cluster. Source: \cite{Wales2005}}
+			%Left: incomplete Mackay icosahedron, Right: truncated octahedron
+			%Energy barrier almost completly prevents ergodic sampling
+			%Impossible to overcome at low temp.
+		\end{figure}
+	\end{frame}
 
+	\begin{frame}
+		\frametitle{LJ$_{38}$ parameters}
+		\begin{itemize}
+			\item Gaussian mixtures with 1, 5 and 10 Gaussians were used
+			\item The symmetric Gaussian mixture (sym-4) developed in the paper was used as well
+			\item Compared against the harmonic approximation (h.a.)
 
+		\end{itemize}
+	\end{frame}
 
+	\begin{frame}
+		\frametitle{LJ$_{38}$ acceptance rate}
+		\begin{figure}
+			\center
+			\includegraphics[height=0.8\textheight]{figures/LJ38_acc.jpg}
+			\label{fig:LJ38_acc}
+			\caption{Acceptance rate  of FH moves in LJ$_{38}$ plotted against temperature. Source: \cite{Finkler2020}}
+			% No increase in acceptance from 5 to 10 gaussians -> Not enough samples to fit parameters for gaussians
+			% 
+		\end{figure}
+	\end{frame}
 
+	\begin{frame}
+		\frametitle{LJ$_{38}$ heat capacity}
+		\begin{figure}
+			\center
+			\includegraphics[height=0.8\textheight]{figures/LJ38_Cv.jpeg}
+			\label{fig:LJ38_Cv}
+			\caption{Heat capacity of LJ$_{38}$ calculated with FHMC compared to PT after different amount of steps. Source: \cite{Finkler2020}}
+			% The reference is Paralell tempering with 2 magnitudes more steps
+			% PT with lesser steps clearly not converged
+		\end{figure}		
+	\end{frame}
 
+	\begin{frame}
+		\frametitle{LJ$_{38}$ heat capacity}
+		\begin{figure}
+			\center
+			\includegraphics[height=0.8\textheight]{figures/LJ38_rmse.jpeg}
+			\label{fig:LJ38_rmse}
+			\caption{Root mean squared error of $C_V$ of LJ$_{38}$ calculated for different methods and lower maximum temperatures (lc). Source: \cite{Finkler2020}}
+			% HMC: Hamiltonian MC
+			% PT: parallel Temp
+			% (lc): lower max temp
+			% FHMC alone outperforms PT at low temp., 
+		\end{figure}	
+	\end{frame}
 
+	\begin{frame}
+		\frametitle{LJ$_{38}$}
+		Using FHMC and PT in combination allows using a significantly lower cutoff temperetaure.
+		\begin{itemize}
+			\item PT allows skipping barriers within funnels
+			\item FHMC allows moving between funnels
+		\end{itemize}
+	\end{frame}
 
+	\begin{frame}
+		\frametitle{LJ$_{75}$}
+		\begin{figure}
+			\center
+			\includegraphics[height=0.85\textheight]{figures/LJ75_disc.jpg}
+			\label{fig:LJ38_disc}
+			\caption{Disconnectivity graph for the LJ$_{75}$ cluster. Source: \cite{Doye1999}}
+			% Two funnels, left one and the right one
+			% We can see very high barrier and also the peak of C_V is well sperated from melting point. Peak -> Solid-Solid transition
+			% Say something smart about peak in C_V indicating phase transition
+		\end{figure}
+	\end{frame}
+ 	
+ 	\begin{frame}
+ 		\frametitle{LJ$_{75}$}
+ 		\begin{itemize}
+ 			\item The high energy barrier prevents efficient PT sampling at low temperatures
+ 			\item Combining PT with Funnel Hopping, transition between the funnels becomes possible even at low temperatures
 
+ 		\end{itemize}
 
+ 	\end{frame}
 
+ 	\begin{frame}
+ 		\frametitle{LJ$_{75}$ acceptance rate}
+ 		\begin{figure}
+			\center
+			\includegraphics[height=0.85\textheight]{figures/LJ75_acc.jpg}
+			\label{fig:LJ38_acc}
+			\caption{Acceptance rate of funnel hopping moves in LJ$_{75}$ plotted against temperature. Source: \cite{Finkler2020}}
+			% sym-3: 3 Gaussians per symmetry
+		\end{figure}
+ 	\end{frame}
 
+ 	\begin{frame}
+ 		\frametitle{LJ$_{75}$ heat capacity}
+ 		\begin{figure}
+			\center
+			\includegraphics[height=0.85\textheight]{figures/LJ75_Cv.png}
+			\label{fig:LJ75_Cv}
+			\caption{Heat capacity of LJ$_{75}$ calculated with FHMC. Source: \cite{Finkler2020}}
+			% Obtained after 1.4*10^7 steps
+			% Big peak: Solid-Solid transition
+		\end{figure}
+ 	\end{frame}
 
+ 	\begin{frame}
+ 		\frametitle{LJ$_{75}$ heat capacity}
+ 		\begin{figure}
+			\center
+			\includegraphics[height=0.85\textheight]{figures/LJ75_Cv_low.jpg}
+			\label{fig:LJ75_Cv_low}
+			\caption{Low temperature $C_V$ peak of LJ$_{75}$ calculated with FH and PT in combination with steps taken. Source: \cite{Finkler2020}}
+			% even after only 10^5 steps, good accuracy
+			% h.a. still shit after 10^5 steps
+		\end{figure}
+ 	\end{frame}
+
+ 	\begin{frame}
+ 		\frametitle{LJ$_{75}$}
+ 		\begin{itemize}
+ 			\item Using FHMC, a convergent result is obtained after only $10^6$ steps (including precomputed calculations)
+ 			\item This is 100 times less steps reported by \citeauthor{Martiniani2014} \cite{Martiniani2014} using the approximate SENS method
+		\end{itemize}
+	\end{frame}
+
+	\section{Conclusion}
 
 
 
