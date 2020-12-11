@@ -55,7 +55,7 @@ method to overcome broken ergodicity \cite{Finkler2020}}\\ % The assignment titl
 \section{Markov Chain Monte Carlo}
 The goal of Markov chain Monte Carlo (MCMC) is to generate samples of a target distribution. In our case the target distribution will always be the Boltzmann distribution
 \begin{equation}
-	P(\mathbf{r})=\frac{1}{Z(t)}\exp\left(\frac{-E(\mathbf{r})}{k_B T}\right)
+	P(\mathbf{r})=\frac{1}{Z(T)}\exp\left(\frac{-E(\mathbf{r})}{k_B T}\right)
 \end{equation}
 We start with a initial configuration $\mathbf{r}$, we then propose a new configuration $\mathbf{r}'$ and accept the new configuration with probability $\alpha$ given by the Metropolis-Hastings criterion \cite{Hastings1970}
 \begin{equation}
@@ -64,7 +64,7 @@ We start with a initial configuration $\mathbf{r}$, we then propose a new config
 \end{equation}
 where $P(\mathbf{r})$ is our target distribution and $g(r|r')$ the probability to propose a move from $r$ to $r'$. The heart of MCMC lies in proposing the right moves. The displacements should be sufficently small or the moves will always be rejected and a convergent solution will not be found. On the other hand, proposing moves that are too small will result again in almost no progress. Thus there is a inherent trade of between the proposed moves and the acceptance rate. Another problem that arises in MCMC when trying to sample a configuration space to calculate a quantity of a system (e.g. heat capacity) are high energy barriers between different regions of minima, especially at low temperatures of interest. This leads to never sampling the whole configuration space and to the namesake phenomenon of broken ergodicity which the paper of \citeauthor{Finkler2020} tries to overcome with their novel method of \emph{Funnel Hopping Monte Carlo}.\\
 \subsection{Energy landscapes and Funnels}
-Energy landscapes can best be characterized by their local minima. These minima can be grouped into together with the higher lying minima into so-called \emph{funnels}. Different funnels are usaly seperated by high energy barriers which can't be overcome in the computation time available. This concept is best visualized with energy disconnectivity graphs as seen in figure \ref{fig:funnels}.
+Energy landscapes can best be characterized by their local minima. These minima can be grouped together with the higher lying minima into so-called \emph{funnels}. Different funnels are usaly seperated by high energy barriers which can't be overcome in the computation time available. This concept is best visualized with energy disconnectivity graphs as seen in figure \ref{fig:funnels}.
 
 \begin{figure}[h!]
 	\center
@@ -96,7 +96,7 @@ To decide if a configuration is inside the high probability regions, we have to 
 \begin{equation}
 	\text{RMSD}(\mathbf{r},\mathbf{R})=\sqrt{\frac{\sum_{i=1}^N ||\vec{r_i}-\vec{R}_i||}{N}}
 \end{equation}
-We define the displacement $\mathbf{d}$ as
+and the displacement $\mathbf{d}$ as
 \begin{equation}
 	\vec{d}_i=\vec{r}_i-\vec{R}_i.
 \end{equation}
@@ -118,18 +118,18 @@ We can now define vectors, to which all displacement vectors obtained with minim
 	V^5=\begin{pmatrix}-\vec{R}_{1,z} \\ 0 \\ \vec{R}_{1,x} \\ -\vec{R}_{2,z} \\ 0 \\ \vec{R}_{2,x} \\ \vec{R}_{3,z} \\ \vdots\end{pmatrix},
 	V^6=\begin{pmatrix}\vec{R}_{1,y}\\-\vec{R}_{1,x}\\0\\\vec{R}_{2,y}\\-\vec{R}_{2,x}\\0\\\vec{R}_{3,y}\\\vdots\end{pmatrix}
 \end{equation}
-This gives as the possibility to construct $3N-6$ new basis vectors $B^i$ that are orthogonal to the vectors $V^j$. Using $B^i$ as our new basis removes 6 degrees of freedom from our system and fixes rotation and translation. The $3N$ dimensional vector $\mathcal{d}$ is then transformed via
+This gives as the possibility to construct $3N-6$ new basis vectors $B^i$ that are orthogonal to the vectors $V^j$. Using $B^i$ as our new basis removes 6 degrees of freedom from our system and fixes rotation and translation. The $3N$ dimensional vector $\mathbf{d}$ is then transformed via
 \begin{equation}
-	\mathbf{d}'=\mathbf{d}\cdot\mathbf{B}^i
+	\mathbf{d}'=\mathbf{d}\cdot\mathbf{B}^i.
 \end{equation}
 To get the total minimum of the RMSD in systems of indistinguishable atoms, one has to minimize with respect to permutations as well. There however, one encounters a causality dilemma. The optimal rotation depends on the permutation where as the optimal permutation depends on the optimal rotation. The paper however suggests a clever method using the Hungarian algorithm \cite{Kuhn1955} in conjunction with a quaternion method \cite{Coutsias2004}.
 \subsection{Funnel Hopping Monte Carlo}
-With the procedures described above, we can finaly get to the actual method at hand. First we assign each point in configuration space to its nearest minimum. For each minimum $\mathbf{R}_i$ one defines a probability distribution $q_i(\mathbf{r})$ which lives in the $3N-6$ dimensional fixed frame corrdinate space. To propose a Funnel Hopping move one determines the nearest minimum $\mathbf{R}_i$ to the current configuration and randomly chooses another minimum $j$. Then one draws a configuration from the corresponding $q_j$. Determining $j$ can be done completly random or via a transition matrix $T$ with $T_ij$ being the probability to choose $j$ while being in minimum $i$. This can help with proposing moves that connect minima with similar energy. The move is then accepted or rejected over a modified Metropolis criterion:
+With the procedures described above, we can finaly get to the actual method at hand. First we assign each point in configuration space to its nearest minimum. For each minimum $\mathbf{R}_i$ one defines a probability distribution $q_i(\mathbf{r})$ which lives in the $3N-6$ dimensional fixed frame corrdinate space. To propose a Funnel Hopping move one determines the nearest minimum $\mathbf{R}_i$ to the current configuration and randomly chooses another minimum $j$. Then one draws a configuration from the corresponding $q_j$. Determining $j$ can be done completly random or via a transition matrix $T$ with $T_{ij}$ being the probability to choose $j$ while being in minimum $i$. This can help with proposing moves that connect minima with similar energy. The move is then accepted or rejected over a modified Metropolis criterion:
 
 \begin{equation}
 	\alpha(\mathbf{r}\rightarrow\mathbf{r}')=\text{min}\left(1,\exp\left(-\frac{E(\mathbf{r}')-E(\mathbf{r})}{k_BT}\right)\frac{q_i(\mathbf{r})}{q_j(\mathbf{r}')}\frac{T_{ji}}{T_{ij}}\frac{h_{\alpha i}}{h_{\alpha j}}\right)	
 \end{equation}
-The distributions $q_i$ are still undefined, but they main role they play is that they are used to generate the proposed configuration. The paper proposes to define these distributions over gaussian mixtures which are defined as follows:
+The distributions $q_i$ are still undefined, but the main role they play is that they are used to generate the proposed configuration. The paper proposes to define these distributions over Gaussian mixtures which are defined as follows:
 \begin{equation}
 	q_i^{g.m.}(r)=\left.\sum_{k=1}^m a_i^k \mathcal{N}_i^k(r) \quad\right|\quad \sum_{k=1}^m a_i^k=1\text{ and } a_i^k \geq0\,\forall k
 \end{equation}
